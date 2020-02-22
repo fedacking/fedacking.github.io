@@ -14,6 +14,7 @@ html_intro = """<!DOCTYPE html>
     </style>
 </head>
 <body>
+<a href="../"><button type="button">Home</button></a>
 <table style="width:50%">
     <tr>
         <th>Opponent</th>
