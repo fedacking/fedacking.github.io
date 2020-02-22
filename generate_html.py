@@ -1,6 +1,6 @@
 from data import dict_matchups
 
-folder = "pages/"
+folder = "champions/"
 
 html_intro = """<!DOCTYPE html>
 <html lang="en">
