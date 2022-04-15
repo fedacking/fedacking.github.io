@@ -1,117 +1,217 @@
 import time
 import traceback
 
+from pickle import dump, load
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-site_list = ['https://las.op.gg/champion/jax/statistics/top',
-             'https://las.op.gg/champion/jayce/statistics/top',
-             'https://las.op.gg/champion/jhin/statistics/bot', 
-             'https://las.op.gg/champion/jinx/statistics/bot',
-             'https://las.op.gg/champion/kaisa/statistics/bot', 
-             'https://las.op.gg/champion/kalista/statistics/bot',
-             'https://las.op.gg/champion/karma/statistics/support',
-             'https://las.op.gg/champion/kassadin/statistics/mid', 
-             'https://las.op.gg/champion/katarina/statistics/mid',
-             'https://las.op.gg/champion/kayle/statistics/top', 
-             'https://las.op.gg/champion/kennen/statistics/top',
-             'https://las.op.gg/champion/kled/statistics/top', 
-             'https://las.op.gg/champion/kogmaw/statistics/bot',
-             'https://las.op.gg/champion/leblanc/statistics/mid', 
-             'https://las.op.gg/champion/leona/statistics/support',
-             'https://las.op.gg/champion/lissandra/statistics/mid', 
-             'https://las.op.gg/champion/lucian/statistics/bot',
-             'https://las.op.gg/champion/lulu/statistics/support', 
-             'https://las.op.gg/champion/lux/statistics/support',
-             'https://las.op.gg/champion/malphite/statistics/top', 
-             'https://las.op.gg/champion/malzahar/statistics/mid',
-             'https://las.op.gg/champion/maokai/statistics/top',
-             'https://las.op.gg/champion/missfortune/statistics/bot',
-             'https://las.op.gg/champion/mordekaiser/statistics/top',
-             'https://las.op.gg/champion/morgana/statistics/support',
-             'https://las.op.gg/champion/nami/statistics/support', 
-             'https://las.op.gg/champion/nasus/statistics/top',
-             'https://las.op.gg/champion/nautilus/statistics/support',
-             'https://las.op.gg/champion/neeko/statistics/mid', 
-             'https://las.op.gg/champion/nocturne/statistics/mid',
-             'https://las.op.gg/champion/orianna/statistics/mid', 
-             'https://las.op.gg/champion/ornn/statistics/top',
-             'https://las.op.gg/champion/pantheon/statistics/mid', 
-             'https://las.op.gg/champion/poppy/statistics/top',
-             'https://las.op.gg/champion/pyke/statistics/support', 
-             'https://las.op.gg/champion/qiyana/statistics/mid',
-             'https://las.op.gg/champion/quinn/statistics/top',
-             'https://las.op.gg/champion/rakan/statistics/support',
-             'https://las.op.gg/champion/renekton/statistics/top',
-             'https://las.op.gg/champion/rengar/statistics/top',
-             'https://las.op.gg/champion/riven/statistics/top',
-             'https://las.op.gg/champion/rumble/statistics/mid',
-             'https://las.op.gg/champion/ryze/statistics/mid',
-             'https://las.op.gg/champion/senna/statistics/support',
-             'https://las.op.gg/champion/sett/statistics/top',
-             'https://las.op.gg/champion/shen/statistics/top',
-             'https://las.op.gg/champion/singed/statistics/top',
-             'https://las.op.gg/champion/sion/statistics/top',
-             'https://las.op.gg/champion/sivir/statistics/bot',
-             'https://las.op.gg/champion/sona/statistics/top',
-             'https://las.op.gg/champion/soraka/statistics/top',
-             'https://las.op.gg/champion/swain/statistics/support',
-             'https://las.op.gg/champion/sylas/statistics/mid',
-             'https://las.op.gg/champion/syndra/statistics/mid',
-             'https://las.op.gg/champion/tahmkench/statistics/support',
-             'https://las.op.gg/champion/talon/statistics/mid',
-             'https://las.op.gg/champion/taric/statistics/support',
-             'https://las.op.gg/champion/teemo/statistics/top',
-             'https://las.op.gg/champion/thresh/statistics/support',
-             'https://las.op.gg/champion/tristana/statistics/bot',
-             'https://las.op.gg/champion/tryndamere/statistics/top',
-             'https://las.op.gg/champion/twistedfate/statistics/mid',
-             'https://las.op.gg/champion/twitch/statistics/bot',
-             'https://las.op.gg/champion/urgot/statistics/top',
-             'https://las.op.gg/champion/varus/statistics/bot',
-             'https://las.op.gg/champion/vayne/statistics/bot',
-             'https://las.op.gg/champion/veigar/statistics/mid',
-             'https://las.op.gg/champion/velkoz/statistics/support',
-             'https://las.op.gg/champion/viktor/statistics/mid',
-             'https://las.op.gg/champion/vladimir/statistics/top',
-             'https://las.op.gg/champion/volibear/statistics/top',
-             'https://las.op.gg/champion/xayah/statistics/bot',
-             'https://las.op.gg/champion/xerath/statistics/support',
-             'https://las.op.gg/champion/yasuo/statistics/mid',
-             'https://las.op.gg/champion/yorick/statistics/top',
-             'https://las.op.gg/champion/yuumi/statistics/support',
-             'https://las.op.gg/champion/zed/statistics/mid',
-             'https://las.op.gg/champion/zeri/statistics/bot',
-             'https://las.op.gg/champion/ziggs/statistics/mid',
-             'https://las.op.gg/champion/zilean/statistics/support',
-             'https://las.op.gg/champion/zoe/statistics/mid',
-             'https://las.op.gg/champion/zyra/statistics/support']
+site_list = [
+    'https://las.op.gg/champions/aatrox/top',
+    'https://las.op.gg/champions/ahri/mid',
+    'https://las.op.gg/champions/akali/top',
+    'https://las.op.gg/champions/akshan/mid',
+    'https://las.op.gg/champions/akshan/top',
+    'https://las.op.gg/champions/alistar/support',
+    'https://las.op.gg/champions/amumu/support',
+    'https://las.op.gg/champions/anivia/mid',
+    'https://las.op.gg/champions/annie/mid',
+    'https://las.op.gg/champions/aphelios/adc',
+    'https://las.op.gg/champions/ashe/adc',
+    'https://las.op.gg/champions/aurelionsol/mid',
+    'https://las.op.gg/champions/azir/mid',
+    'https://las.op.gg/champions/bard/support',
+    'https://las.op.gg/champions/blitzcrank/support',
+    'https://las.op.gg/champions/brand/support',
+    'https://las.op.gg/champions/braum/support',
+    'https://las.op.gg/champions/caitlyn/adc',
+    'https://las.op.gg/champions/camille/top',
+    'https://las.op.gg/champions/cassiopeia/mid',
+    'https://las.op.gg/champions/cassiopeia/top',
+    'https://las.op.gg/champions/chogath/top',
+    'https://las.op.gg/champions/corki/mid',
+    'https://las.op.gg/champions/darius/top',
+    'https://las.op.gg/champions/diana/jungle',
+    'https://las.op.gg/champions/draven/adc',
+    'https://las.op.gg/champions/drmundo/top',
+    'https://las.op.gg/champions/ekko/jungle',
+    'https://las.op.gg/champions/elise/jungle',
+    'https://las.op.gg/champions/evelynn/jungle',
+    'https://las.op.gg/champions/ezreal/adc',
+    'https://las.op.gg/champions/fiddlesticks/jungle',
+    'https://las.op.gg/champions/fiora/top',
+    'https://las.op.gg/champions/fizz/mid',
+    'https://las.op.gg/champions/galio/mid',
+    'https://las.op.gg/champions/gangplank/top',
+    'https://las.op.gg/champions/garen/top',
+    'https://las.op.gg/champions/gnar/top',
+    'https://las.op.gg/champions/gragas/top',
+    'https://las.op.gg/champions/graves/jungle',
+    'https://las.op.gg/champions/graves/top',
+    'https://las.op.gg/champions/gwen/top',
+    'https://las.op.gg/champions/hecarim/jungle',
+    'https://las.op.gg/champions/heimerdinger/top',
+    'https://las.op.gg/champions/illaoi/top',
+    'https://las.op.gg/champions/irelia/top',
+    'https://las.op.gg/champions/ivern/jungle',
+    'https://las.op.gg/champions/janna/support',
+    'https://las.op.gg/champions/jarvaniv/jungle',
+    'https://las.op.gg/champions/jax/top',
+    'https://las.op.gg/champions/jayce/top',
+    'https://las.op.gg/champions/jhin/adc',
+    'https://las.op.gg/champions/jinx/adc',
+    'https://las.op.gg/champions/kaisa/adc',
+    'https://las.op.gg/champions/kalista/adc',
+    'https://las.op.gg/champions/karma/support',
+    'https://las.op.gg/champions/karthus/jungle',
+    'https://las.op.gg/champions/kassadin/mid',
+    'https://las.op.gg/champions/katarina/mid',
+    'https://las.op.gg/champions/kayle/top',
+    'https://las.op.gg/champions/kayn/jungle',
+    'https://las.op.gg/champions/kennen/top',
+    'https://las.op.gg/champions/khazix/jungle',
+    'https://las.op.gg/champions/kindred/jungle',
+    'https://las.op.gg/champions/kled/top',
+    'https://las.op.gg/champions/kogmaw/adc',
+    'https://las.op.gg/champions/leblanc/mid',
+    'https://las.op.gg/champions/leesin/jungle',
+    'https://las.op.gg/champions/leona/support',
+    'https://las.op.gg/champions/lillia/jungle',
+    'https://las.op.gg/champions/lillia/top',
+    'https://las.op.gg/champions/lissandra/mid',
+    'https://las.op.gg/champions/lucian/adc',
+    'https://las.op.gg/champions/lulu/support',
+    'https://las.op.gg/champions/lux/support',
+    'https://las.op.gg/champions/malphite/top',
+    'https://las.op.gg/champions/malzahar/mid',
+    'https://las.op.gg/champions/maokai/support',
+    'https://las.op.gg/champions/maokai/top',
+    'https://las.op.gg/champions/masteryi/jungle',
+    'https://las.op.gg/champions/missfortune/adc',
+    'https://las.op.gg/champions/monkeyking/jungle',
+    'https://las.op.gg/champions/monkeyking/top',
+    'https://las.op.gg/champions/mordekaiser/top',
+    'https://las.op.gg/champions/morgana/support',
+    'https://las.op.gg/champions/nami/support',
+    'https://las.op.gg/champions/nasus/top',
+    'https://las.op.gg/champions/nautilus/support',
+    'https://las.op.gg/champions/neeko/mid',
+    'https://las.op.gg/champions/nidalee/jungle',
+    'https://las.op.gg/champions/nocturne/jungle',
+    'https://las.op.gg/champions/nunu/jungle',
+    'https://las.op.gg/champions/olaf/jungle',
+    'https://las.op.gg/champions/orianna/mid',
+    'https://las.op.gg/champions/ornn/top',
+    'https://las.op.gg/champions/pantheon/support',
+    'https://las.op.gg/champions/pantheon/top',
+    'https://las.op.gg/champions/poppy/jungle',
+    'https://las.op.gg/champions/poppy/top',
+    'https://las.op.gg/champions/pyke/support',
+    'https://las.op.gg/champions/qiyana/mid',
+    'https://las.op.gg/champions/quinn/top',
+    'https://las.op.gg/champions/rakan/support',
+    'https://las.op.gg/champions/rammus/jungle',
+    'https://las.op.gg/champions/reksai/jungle',
+    'https://las.op.gg/champions/rell/support',
+    'https://las.op.gg/champions/renata/support',
+    'https://las.op.gg/champions/renekton/top',
+    'https://las.op.gg/champions/rengar/top',
+    'https://las.op.gg/champions/riven/top',
+    'https://las.op.gg/champions/rumble/top',
+    'https://las.op.gg/champions/ryze/mid',
+    'https://las.op.gg/champions/ryze/top',
+    'https://las.op.gg/champions/samira/adc',
+    'https://las.op.gg/champions/sejuani/jungle',
+    'https://las.op.gg/champions/sejuani/top',
+    'https://las.op.gg/champions/senna/support',
+    'https://las.op.gg/champions/seraphine/support',
+    'https://las.op.gg/champions/sett/top',
+    'https://las.op.gg/champions/shaco/jungle',
+    'https://las.op.gg/champions/shen/top',
+    'https://las.op.gg/champions/shyvana/jungle',
+    'https://las.op.gg/champions/singed/top',
+    'https://las.op.gg/champions/sion/top',
+    'https://las.op.gg/champions/sivir/adc',
+    'https://las.op.gg/champions/sona/support',
+    'https://las.op.gg/champions/soraka/support',
+    'https://las.op.gg/champions/swain/support',
+    'https://las.op.gg/champions/sylas/mid',
+    'https://las.op.gg/champions/sylas/top',
+    'https://las.op.gg/champions/syndra/mid',
+    'https://las.op.gg/champions/tahmkench/top',
+    'https://las.op.gg/champions/taliyah/jungle',
+    'https://las.op.gg/champions/talon/jungle',
+    'https://las.op.gg/champions/taric/support',
+    'https://las.op.gg/champions/teemo/top',
+    'https://las.op.gg/champions/thresh/support',
+    'https://las.op.gg/champions/tristana/adc',
+    'https://las.op.gg/champions/trundle/jungle',
+    'https://las.op.gg/champions/trundle/top',
+    'https://las.op.gg/champions/tryndamere/top',
+    'https://las.op.gg/champions/twistedfate/mid',
+    'https://las.op.gg/champions/twitch/adc',
+    'https://las.op.gg/champions/udyr/jungle',
+    'https://las.op.gg/champions/urgot/top',
+    'https://las.op.gg/champions/varus/adc',
+    'https://las.op.gg/champions/vayne/adc',
+    'https://las.op.gg/champions/vayne/top',
+    'https://las.op.gg/champions/veigar/mid',
+    'https://las.op.gg/champions/velkoz/support',
+    'https://las.op.gg/champions/vex/mid',
+    'https://las.op.gg/champions/vi/jungle',
+    'https://las.op.gg/champions/viego/jungle',
+    'https://las.op.gg/champions/viktor/mid',
+    'https://las.op.gg/champions/viktor/top',
+    'https://las.op.gg/champions/vladimir/mid',
+    'https://las.op.gg/champions/vladimir/top',
+    'https://las.op.gg/champions/volibear/top',
+    'https://las.op.gg/champions/warwick/jungle',
+    'https://las.op.gg/champions/warwick/top',
+    'https://las.op.gg/champions/xayah/adc',
+    'https://las.op.gg/champions/xerath/support',
+    'https://las.op.gg/champions/xinzhao/jungle',
+    'https://las.op.gg/champions/xinzhao/top',
+    'https://las.op.gg/champions/yasuo/mid',
+    'https://las.op.gg/champions/yasuo/top',
+    'https://las.op.gg/champions/yone/mid',
+    'https://las.op.gg/champions/yone/top',
+    'https://las.op.gg/champions/yorick/top',
+    'https://las.op.gg/champions/yuumi/support',
+    'https://las.op.gg/champions/zac/jungle',
+    'https://las.op.gg/champions/zac/top',
+    'https://las.op.gg/champions/zed/mid',
+    'https://las.op.gg/champions/zeri/adc',
+    'https://las.op.gg/champions/ziggs/adc',
+    'https://las.op.gg/champions/zilean/support',
+    'https://las.op.gg/champions/zoe/mid',
+    'https://las.op.gg/champions/zyra/support',
+]
 
-
-dict_matchups = {}
-session = webdriver.Chrome()
 try:
-    for site in site_list:
-        if "jungle" in site:
-            continue
+    with open("data.pickle", "r+") as data_file:
+        dict_matchups = load(data_file)
+except FileNotFoundError:
+    dict_matchups = {}
+session = webdriver.Chrome()
+for site in site_list:
+    try:
         champion = site.split("/")[4]
+        if "jungle" in site or champion in dict_matchups:
+            continue
         dict_matchups[champion] = {}
 
-        session.get(site + "/matchup")
-        scroll_box = session.find_element(By.XPATH, '//div[@class="champion-matchup-champion-list"]')
-        matchups = session.find_elements(By.XPATH, '//div[@class="champion-matchup-champion-list"]/div')
+        session.get(site + "/counters")
+        matchups = session.find_elements(By.XPATH, '//a[@class="link_display"]')
 
-        for page in matchups:
-            session.execute_script("arguments[0].scrollIntoView();", page)
-            page.click()
-            time.sleep(2)
-            matchup = session.find_elements(By.XPATH, '//div[@class="champion-matchup-champion__name"]')
-            element = session.find_elements(By.XPATH, '//table[@class="champion-matchup-table"]/tbody/tr/td')
-            dict_matchups[champion][matchup[1].text] = float(element[0].text.strip('%'))
-
-        print(dict_matchups)
-except:
-    traceback.print_exc()
-finally:
-    session.close()
-    print(dict_matchups)
+        for matchup in matchups:
+            session.execute_script("arguments[0].scrollIntoView();", matchup)
+            matchup.click()
+            time.sleep(3)
+            name = matchup.find_element(By.XPATH, '//div[@class="champion champion--counter"]/div[@class="name"]')
+            winrate = session.find_element(By.XPATH, "//td[@class='data data--opponent']")
+            dict_matchups[champion][name.text] = float(winrate.text.strip('%'))
+    except:
+        traceback.print_exc()
+    dump(dict_matchups, data_file)
+session.close()
+with open("data.pickle", "r+") as data_file:
+    dump(dict_matchups, data_file)
