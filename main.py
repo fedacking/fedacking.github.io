@@ -187,7 +187,7 @@ site_list = [
 ]
 
 try:
-    with open("data.pickle", "r+") as data_file:
+    with open("data.pickle", "rb+") as data_file:
         dict_matchups = load(data_file)
 except FileNotFoundError:
     dict_matchups = {}
@@ -211,7 +211,8 @@ for site in site_list:
             dict_matchups[champion][name.text] = float(winrate.text.strip('%'))
     except:
         traceback.print_exc()
-    dump(dict_matchups, data_file)
+    with open("data.pickle", "wb+") as data_file:
+        dump(dict_matchups, data_file)
 session.close()
-with open("data.pickle", "r+") as data_file:
+with open("data.pickle", "wb+") as data_file:
     dump(dict_matchups, data_file)
