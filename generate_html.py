@@ -29,7 +29,7 @@ html_end = """</table>
 for champion in dict_matchups:
     opponent_list = []
     for opponent in dict_matchups[champion]:
-        opponent_list.append((dict_matchups[champion][opponent], opponent))
+        opponent_list.append((100 - dict_matchups[champion][opponent], opponent))
     opponent_list = sorted(opponent_list, key=lambda tup: tup[0])
     file = open(folder + champion + ".html", "w+")
     file.write(html_intro)
